@@ -9,38 +9,151 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as AuthRouteImport } from './routes/auth'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as TripSlugRouteImport } from './routes/trip.$slug'
+import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
+import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin.index'
+import { Route as AuthenticatedAdminReferenceRouteImport } from './routes/_authenticated/admin.reference'
+import { Route as AuthenticatedAdminTripsNewRouteImport } from './routes/_authenticated/admin.trips.new'
+import { Route as AuthenticatedAdminTripsIdRouteImport } from './routes/_authenticated/admin.trips.$id'
 
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const TripSlugRoute = TripSlugRouteImport.update({
+  id: '/trip/$slug',
+  path: '/trip/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedAdminIndexRoute = AuthenticatedAdminIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AuthenticatedAdminRoute,
+} as any)
+const AuthenticatedAdminReferenceRoute =
+  AuthenticatedAdminReferenceRouteImport.update({
+    id: '/reference',
+    path: '/reference',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
+const AuthenticatedAdminTripsNewRoute =
+  AuthenticatedAdminTripsNewRouteImport.update({
+    id: '/trips/new',
+    path: '/trips/new',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
+const AuthenticatedAdminTripsIdRoute =
+  AuthenticatedAdminTripsIdRouteImport.update({
+    id: '/trips/$id',
+    path: '/trips/$id',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
+  '/admin': typeof AuthenticatedAdminRouteWithChildren
+  '/trip/$slug': typeof TripSlugRoute
+  '/admin/reference': typeof AuthenticatedAdminReferenceRoute
+  '/admin/': typeof AuthenticatedAdminIndexRoute
+  '/admin/trips/$id': typeof AuthenticatedAdminTripsIdRoute
+  '/admin/trips/new': typeof AuthenticatedAdminTripsNewRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
+  '/trip/$slug': typeof TripSlugRoute
+  '/admin/reference': typeof AuthenticatedAdminReferenceRoute
+  '/admin': typeof AuthenticatedAdminIndexRoute
+  '/admin/trips/$id': typeof AuthenticatedAdminTripsIdRoute
+  '/admin/trips/new': typeof AuthenticatedAdminTripsNewRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
+  '/auth': typeof AuthRoute
+  '/_authenticated/admin': typeof AuthenticatedAdminRouteWithChildren
+  '/trip/$slug': typeof TripSlugRoute
+  '/_authenticated/admin/reference': typeof AuthenticatedAdminReferenceRoute
+  '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
+  '/_authenticated/admin/trips/$id': typeof AuthenticatedAdminTripsIdRoute
+  '/_authenticated/admin/trips/new': typeof AuthenticatedAdminTripsNewRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/auth'
+    | '/admin'
+    | '/trip/$slug'
+    | '/admin/reference'
+    | '/admin/'
+    | '/admin/trips/$id'
+    | '/admin/trips/new'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/auth'
+    | '/trip/$slug'
+    | '/admin/reference'
+    | '/admin'
+    | '/admin/trips/$id'
+    | '/admin/trips/new'
+  id:
+    | '__root__'
+    | '/'
+    | '/_authenticated'
+    | '/auth'
+    | '/_authenticated/admin'
+    | '/trip/$slug'
+    | '/_authenticated/admin/reference'
+    | '/_authenticated/admin/'
+    | '/_authenticated/admin/trips/$id'
+    | '/_authenticated/admin/trips/new'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
+  AuthRoute: typeof AuthRoute
+  TripSlugRoute: typeof TripSlugRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -48,11 +161,84 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/trip/$slug': {
+      id: '/trip/$slug'
+      path: '/trip/$slug'
+      fullPath: '/trip/$slug'
+      preLoaderRoute: typeof TripSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/admin': {
+      id: '/_authenticated/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AuthenticatedAdminRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/admin/': {
+      id: '/_authenticated/admin/'
+      path: '/'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AuthenticatedAdminIndexRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/reference': {
+      id: '/_authenticated/admin/reference'
+      path: '/reference'
+      fullPath: '/admin/reference'
+      preLoaderRoute: typeof AuthenticatedAdminReferenceRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/trips/new': {
+      id: '/_authenticated/admin/trips/new'
+      path: '/trips/new'
+      fullPath: '/admin/trips/new'
+      preLoaderRoute: typeof AuthenticatedAdminTripsNewRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/trips/$id': {
+      id: '/_authenticated/admin/trips/$id'
+      path: '/trips/$id'
+      fullPath: '/admin/trips/$id'
+      preLoaderRoute: typeof AuthenticatedAdminTripsIdRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
   }
 }
 
+interface AuthenticatedAdminRouteChildren {
+  AuthenticatedAdminReferenceRoute: typeof AuthenticatedAdminReferenceRoute
+  AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
+  AuthenticatedAdminTripsIdRoute: typeof AuthenticatedAdminTripsIdRoute
+  AuthenticatedAdminTripsNewRoute: typeof AuthenticatedAdminTripsNewRoute
+}
+
+const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
+  AuthenticatedAdminReferenceRoute: AuthenticatedAdminReferenceRoute,
+  AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
+  AuthenticatedAdminTripsIdRoute: AuthenticatedAdminTripsIdRoute,
+  AuthenticatedAdminTripsNewRoute: AuthenticatedAdminTripsNewRoute,
+}
+
+const AuthenticatedAdminRouteWithChildren =
+  AuthenticatedAdminRoute._addFileChildren(AuthenticatedAdminRouteChildren)
+
+interface AuthenticatedRouteRouteChildren {
+  AuthenticatedAdminRoute: typeof AuthenticatedAdminRouteWithChildren
+}
+
+const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedAdminRoute: AuthenticatedAdminRouteWithChildren,
+}
+
+const AuthenticatedRouteRouteWithChildren =
+  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
+  AuthRoute: AuthRoute,
+  TripSlugRoute: TripSlugRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
