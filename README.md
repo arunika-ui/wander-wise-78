@@ -57,7 +57,8 @@ user_roles
 
 ```bash
 bun install
-cp .env.example .env    # Supabase URL + anon key + service role key
+# .env already holds the public Supabase URL and publishable key;
+# add SUPABASE_SERVICE_ROLE_KEY locally (never commit it)
 bun run dev
 ```
 
